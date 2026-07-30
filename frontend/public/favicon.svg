@@ -1,0 +1,10 @@
+<svg
+    viewBox="0 0 32 32"
+    className="w-6 h-6 text-brass-500 dark:text-brass-400"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+    <circle cx="16" cy="16" r="14" stroke="#C48A2C" strokeWidth="2" />
+    <circle cx="16" cy="13" r="3.2" fill="#C48A2C" />
+    <path d="M14.2 15.5 L17.8 15.5 L19 22 L13 22 Z" fill="#C48A2C" />
+</svg>

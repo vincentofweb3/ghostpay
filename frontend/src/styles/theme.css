@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* The signature element: a redaction bar over hidden amounts. Dark mode
+   reads as a terminal/ledger; light mode reads as a literal censored
+   paper document — both are the same underlying metaphor. */
+.redacted-bar {
+  background-image: repeating-linear-gradient(
+    45deg,
+    theme("colors.ink.700") 0px,
+    theme("colors.ink.700") 6px,
+    theme("colors.ink.800") 6px,
+    theme("colors.ink.800") 12px
+  );
+}
+
+.dark .redacted-bar {
+  background-image: repeating-linear-gradient(
+    45deg,
+    theme("colors.ink.800") 0px,
+    theme("colors.ink.800") 6px,
+    theme("colors.ink.700") 6px,
+    theme("colors.ink.700") 12px
+  );
+}
+
+@keyframes stamp-reveal {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.stamp-reveal {
+  animation: stamp-reveal 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fade-up 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.fade-up-delay-1 { animation-delay: 120ms; }
+.fade-up-delay-2 { animation-delay: 240ms; }
+.fade-up-delay-3 { animation-delay: 360ms; }
+
+/* Faint repeating ledger-line watermark for section backgrounds — same
+   diagonal language as .redacted-bar, at low opacity so it reads as
+   texture, not noise. */
+.ledger-watermark {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0px,
+    transparent 38px,
+    currentColor 38px,
+    currentColor 39px
+  );
+  opacity: 0.04;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .stamp-reveal {
+    animation: none;
+  }
+}
