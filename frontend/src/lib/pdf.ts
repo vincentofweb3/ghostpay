@@ -8,10 +8,10 @@ export function downloadReceipt(
   const pdf = new jsPDF("portrait", "mm", "a4");
 
   // Colors
-  const brass = [201, 138, 44];
-  const dark = [30, 30, 30];
-  const green = [34, 197, 94];
-  const gray = [120, 120, 120];
+  const brass = [201, 137, 46] as const;
+const dark = [17, 24, 39] as const;
+const gray = [107, 114, 128] as const;
+const green = [34, 197, 94] as const;
 
   // Background
   pdf.setFillColor(250, 250, 248);
