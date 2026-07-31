@@ -1,10 +1,15 @@
-#  GhostPay
 
-> **Private payments on public blockchains using iExec Nox**
->
-> Built for the **iExec WTF Hackathon – Summer Edition**
+<h1 align="center">GhostPay</h1>
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-success?logo=vercel)](https://ghostpay-psi.vercel.app)
+<p align="center">
+Private Payments on Public Rails
+</p>
+
+<p align="center">
+GhostPay enables confidential payments and selective receipt sharing on Ethereum using <strong>iExec Nox</strong>, while remaining compatible with existing wallets like MetaMask, Rabby, and Rainbow.
+</p>
+
+<p align="center">
 
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636?logo=solidity)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
@@ -12,200 +17,336 @@
 ![Nox](https://img.shields.io/badge/iExec-Nox-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
----
-
-![GhostPay banner](docs/banner.png)
+</p>
 
 ---
 
-## The Problem
+# The Problem
 
-Public blockchains expose every payment.
+Public blockchains provide transparency, but not privacy.
 
-Even if a wallet address is pseudonymous, anyone can see:
+Whenever a payment is made on-chain, anyone can inspect:
 
-- who paid whom
-- how much was paid
-- when it happened
-- every future transaction
+- who paid
+- who received
+- how much was transferred
+- what the transaction represents
 
-This makes confidential activities like payroll, freelance work, donations, treasury operations and supplier payments impossible without sacrificing privacy.
+For many real-world use cases, this is undesirable.
 
----
+Examples include:
 
-## Our Solution
+- payroll payments
+- freelancer settlements
+- treasury operations
+- charitable donations
 
-GhostPay enables **confidential payments on public infrastructure**.
+Although these transactions should settle on a public blockchain, the payment amount and business context should remain confidential.
 
-Instead of hiding the transaction itself, GhostPay keeps the transaction public while encrypting the sensitive information.
-
-The recipient remains visible.
-
-The payment amount remains confidential.
-
-Only authorized wallets can decrypt payment details.
-
-Everything is powered by **iExec Nox confidential smart contracts**.
+Current public ERC-20 transfers expose all of this information forever.
 
 ---
 
-## Features
+# The Solution
 
-- 🔒 Confidential payment amounts
-- 🏷️ Encrypted payment categories
-- 👛 Works with existing wallets (MetaMask, Rabby)
-- 📄 Selective receipt sharing
-- 🔑 Fine-grained decryption permissions
-- ⚡ Built on Ethereum Sepolia + Nox
+GhostPay introduces confidential payments without requiring users to migrate to a new wallet.
+
+Users continue using wallets they already own, including:
+
+- MetaMask
+- Rabby
+- Rainbow
+
+GhostPay leverages **iExec Nox** to encrypt confidential payment information while still settling transactions on Ethereum Sepolia.
+
+Unlike ordinary transfers, GhostPay encrypts:
+
+- payment amount
+- payment category
+
+while allowing the recipient to receive funds normally.
+
+The result is a familiar wallet experience with confidential transaction metadata.
 
 ---
 
-## Architecture
+# Why iExec Nox?
 
-```text
-Sender
-   │
-Encrypt amount & category
-   │
-   ▼
-GhostPay Router
-   │
-   ▼
-GhostVault (ERC7984 Wrapper)
-   │
-   ▼
-Wrapped ERC20
+GhostPay is built on top of **iExec Nox confidential smart contracts.**
 
-           │
+Nox provides encrypted computation and access control primitives that allow smart contracts to work with confidential values.
 
-Recipient decrypts
-           │
+GhostPay uses these capabilities to:
 
-Authorized third-party
-(Accountant/Auditor)
-can decrypt only
-shared receipts
+- encrypt payment amounts
+- encrypt payment categories
+- grant decryption rights only to authorized wallets
+- selectively disclose individual receipts without exposing an entire payment history
+
+Instead of modifying ERC-20 tokens, GhostPay wraps an existing token through the official Nox confidential wrapper and adds confidential payment functionality on top.
+
+---
+
+# Features
+
+| Feature | Description |
+|----------|-------------|
+| Confidential Payments | Payment amounts remain encrypted |
+| Encrypted Categories | Payment purpose stays private |
+| Selective Receipt Sharing | Share a single payment with another wallet |
+| Existing Wallet Support | Works with MetaMask, Rabby and Rainbow |
+| Public Settlement | Transactions still settle on Ethereum |
+| Confidential Access Control | Powered by Nox ACL permissions |
+
+---
+
+# Architecture
+
+<p align="center">
+<img src="docs/architecture.png" width="95%">
+</p>
+
+GhostPay consists of two primary smart contracts.
+
+### GhostVault
+
+Wraps an existing ERC-20 into a confidential ERC-7984-compatible asset using the official Nox wrapper.
+
+### GhostPayRouter
+
+Coordinates confidential payments by:
+
+- encrypting payment amounts
+- encrypting payment categories
+- storing confidential payment records
+- issuing selective receipts
+- managing viewer permissions through Nox ACL
+
+---
+
+# Payment Flow
+
+<p align="center">
+<img src="docs/payment-flow.png" width="95%">
+</p>
+
+A confidential payment follows five simple steps.
+
+1. User connects an existing wallet.
+2. Amount and category are encrypted locally.
+3. GhostPayRouter stores confidential payment data.
+4. Recipient receives the payment.
+5. Sender may optionally share a confidential receipt with a third-party wallet.
+
+Only wallets explicitly granted permission can decrypt shared receipt information.
+
+---
+
+# Landing Page
+
+<p align="center">
+<img src="docs/screenshots/landing-page2.png">
+</p>
+
+GhostPay introduces users to confidential payments while maintaining the familiar Web3 wallet experience.
+
+---
+
+# Sending a Confidential Payment
+
+<p align="center">
+<img src="docs/screenshots/send-payment.png">
+</p>
+
+Users enter:
+
+- recipient
+- payment amount
+- payment category
+
+The amount and category are encrypted before being submitted to the blockchain.
+
+---
+
+# Shared Receipt Verification
+
+<p align="center">
+<img src="docs/screenshots/shared-receipts.png">
+</p>
+
+GhostPay introduces selective disclosure.
+
+Instead of exposing an entire payment history, a sender can authorize another wallet to decrypt **only one specific payment receipt**.
+
+Typical use cases include:
+
+- accountants
+- auditors
+- employers
+- compliance teams
+- business partners
+
+Every receipt is individually permissioned using Nox access control.
+
+---
+
+# Repository Structure
+
+```
+GhostPay
+│
+├── contracts/
+│   ├── GhostVault.sol
+│   ├── GhostPayRouter.sol
+│   ├── MockUSD.sol
+│   ├── scripts/
+│   └── test/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── components/
+│
+├── docs/
+│   ├── architecture.png
+│   ├── payment-flow.png
+│   ├── banner.png
+│   └── screenshots/
+│
+├── feedback.md
+└── README.md
 ```
 
 ---
 
-## 🔐 Privacy Model
+# Technology Stack
 
-GhostPay does **not** modify ERC20 tokens.
-
-Instead:
-
-- ERC20 tokens are wrapped with Nox
-- confidential values are stored as encrypted handles
-- access is managed through Nox ACL permissions
-
-Only wallets explicitly granted permission can decrypt.
-
----
-
-## Screenshots
-
-### Landing Page
-
-![Landing Page](docs/screenshots/landing-page.png)
-
-### Send Payment
-
-![Send Payment](docs/screenshots/send-payment.png)
-
-### Shared Receipts
-
-![Shared Receipts](docs/screenshots/shared-receipts.png)
+| Layer | Technology |
+|---------|------------|
+| Blockchain | Ethereum Sepolia |
+| Confidential Layer | iExec Nox |
+| Smart Contracts | Solidity 0.8.28 |
+| Frontend | React 19 |
+| Language | TypeScript |
+| Wallet Integration | Wagmi + RainbowKit |
+| Build Tool | Vite |
+| Styling | Tailwind CSS |
 
 ---
 
-## Tech Stack
+# Running Locally
 
-- Solidity
-- Hardhat
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Wagmi
-- Viem
-- iExec Nox SDK
-- Ethereum Sepolia
+## Clone
 
----
+```bash
+git clone https://github.com/YOUR_USERNAME/ghostpay.git
 
-## Repository Structure
-
-```text
-contracts/
-frontend/
-docs/
-feedback.md
+cd ghostpay
 ```
 
----
-
-## Running Locally
-
-### Contracts
+## Contracts
 
 ```bash
 cd contracts
+
 npm install
+
 cp .env.example .env
+```
+
+Fill in:
+
+```
+SEPOLIA_RPC_URL=
+
+DEPLOYER_PRIVATE_KEY=
+```
+
+Compile contracts
+
+```bash
 npm run compile
+```
+
+Deploy
+
+```bash
 npm run deploy:sepolia
 ```
 
-Update
+Copy the deployed addresses into
 
-```text
+```
 frontend/src/lib/addresses.ts
 ```
 
-with the deployed addresses.
+---
 
-### Frontend
+## Frontend
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
+```
+
+Open
+
+```
+http://localhost:5173
 ```
 
 ---
 
-## Demo
+# Smart Contracts
 
-The demo showcases:
+## GhostVault
 
-- Wallet connection
-- Sending confidential payments
-- Encrypted categories
-- Receipt sharing
-- Third-party receipt verification
-- Public vs confidential comparison
+Wraps an ERC-20 token into a confidential ERC-7984-compatible asset using the official Nox wrapper.
 
----
+## GhostPayRouter
 
-## Future Work
+Responsible for:
 
-- Multi-recipient payments
-- Time-limited receipt permissions
-- Revocable receipt access
-- DAO treasury support
-- Payroll automation
-- Batch confidential transfers
+- confidential payment creation
+- encrypted category storage
+- receipt issuance
+- selective disclosure
+- viewer permission management
 
 ---
 
-## It's Built For
+# Future Improvements
 
-**iExec WTF Hackathon (Summer Edition)**
+- Complete confidential ERC-7984 transfer integration
+- Multiple receipt viewers
+- QR-based receipt sharing
+- Mobile-responsive interface
+- Mainnet deployment
+- Confidential payment analytics
 
-Powered by:
+---
+
+# Built For
+
+**iExec Write The Future (WTF) Hackathon – Summer Edition**
+
+Track
+
+Confidential Smart Contracts with Nox
+
+Built using
 
 - iExec Nox
-- Ethereum
+- Ethereum Sepolia
+- Solidity
 - React
-- Hardhat
+- TypeScript
+
+---
+
+# License
+
+MIT License.
