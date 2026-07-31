@@ -26,8 +26,8 @@ export function Hero({ onLaunch }: { onLaunch: () => void }) {
           </h1>
 
           <p className="fade-up fade-up-delay-2 mt-5 sm:mt-6 text-base sm:text-lg text-ink-700 dark:text-paper-200/70 leading-relaxed max-w-lg">
-            Send from your existing wallet — MetaMask, Rabby, Rainbow, no migration. The recipient
-            is public. What you paid them is between you two — until you decide to prove it to
+            Send from your existing wallet - MetaMask, Rabby, Rainbow, no migration. The recipient
+            is public. What you paid them is between you two - until you decide to prove it to
             someone else.
           </p>
 
@@ -47,7 +47,7 @@ export function Hero({ onLaunch }: { onLaunch: () => void }) {
           </div>
 
           <div className="fade-up fade-up-delay-3 mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-ink-700/60 dark:text-paper-200/50">
-            <span>GhostVault <span className="text-ink-950 dark:text-paper-50">0x0000…0000</span></span>
+            <span>GhostVault <span className="text-ink-950 dark:text-paper-50">0x1234…7890</span></span>
             <span>Network <span className="text-ink-950 dark:text-paper-50">Sepolia</span></span>
             <span>Nox chain <span className="text-ink-950 dark:text-paper-50">11155111</span></span>
           </div>

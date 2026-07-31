@@ -19,20 +19,21 @@ export function ReceiptsTab() {
 
   const [toast, setToast] = useState("");
 
-  useEffect(() => {
-    async function load() {
-      if (!address) return;
-
-      const data = await getAllPayments();
-
-      const received = data.filter(
-        (payment) => payment.to.toLowerCase() === address.toLowerCase(),
-      );
-
-      setPayments(received);
+  const loadPayments = async () => {
+    if (!address) {
+      setPayments([]);
+      return;
     }
 
-    load();
+    const data = await getAllPayments();
+
+    setPayments(
+      data.filter((p) => p.to.toLowerCase() === address.toLowerCase()),
+    );
+  };
+
+  useEffect(() => {
+    loadPayments();
   }, [address]);
 
   return (
@@ -45,8 +46,8 @@ export function ReceiptsTab() {
         </h2>
 
         <p className="text-sm text-ink-700 dark:text-paper-200/70 mt-1">
-          Prove one payment to one person—an accountant, an auditor, or a
-          landlord—without making it public and without exposing anything else
+          Prove one payment to one person - an accountant, an auditor, or a
+          landlord - without making it public and without exposing anything else
           you've sent or received.
         </p>
       </div>
@@ -97,6 +98,8 @@ export function ReceiptsTab() {
             setIssuing(true);
 
             await issueReceipt(selectedPayment.id, viewer);
+
+            window.dispatchEvent(new Event("receiptGranted"));
 
             setGrantedId(selectedPayment.id);
 

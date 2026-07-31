@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Landing } from "./pages/Landing";
 import { Dashboard } from "./pages/Dashboard";
 import { Docs } from "./pages/Docs";
+// import { ReceiptVerificationTab } from "./components/ReceiptVerificationTab";
 
 type View = "landing" | "dashboard" | "docs";
 

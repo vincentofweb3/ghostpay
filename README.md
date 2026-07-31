@@ -1,42 +1,169 @@
-# GhostPay — private payments on public rails
+#  GhostPay
 
-Built for the iExec WTF Hackathon (Summer Edition), on Nox.
+> **Private payments on public blockchains using iExec Nox**
+>
+> Built for the **iExec WTF Hackathon – Summer Edition**
 
-## What this is
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?logo=vercel)](https://ghostpay-psi.vercel.app)
 
-GhostPay lets anyone send a payment from their existing wallet (MetaMask, Rabby, Rainbow — no new wallet, no migration) where the **recipient is public but the amount is not**, using Nox's confidential ERC-7984 layer on top of an ordinary, unmodified ERC-20. It adds two things on top of a bare confidential-transfer wrapper:
+![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636?logo=solidity)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![Nox](https://img.shields.io/badge/iExec-Nox-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-1. **Tagged categories** (Payroll / Donation / Freelance / Treasury) — encrypted per-payment, so the same flow covers multiple real use cases without multiplying contracts or UI.
-2. **Selective-disclosure receipts** — a sender can grant one specific third party (an accountant, an auditor, a counterparty) decrypt rights on exactly one payment, without making it public and without exposing anything else in their history. Built directly on Nox's ACL primitives.
+---
 
-## Why this satisfies the brief
+![GhostPay banner](docs/banner.png)
 
-- The underlying token (`MockUSD`, standing in for a real ERC-20 like USDC) is never modified — `GhostVault` wraps it via Nox's official `ERC20ToERC7984Wrapper`.
-- Privacy is added by **routing through Nox**, not by forking or altering the public protocol.
-- It targets the brief's suggested "Wallets" category directly: works with any existing wallet, no special integration required from MetaMask/Rabby/Rainbow themselves.
+---
 
-## Repo structure
+## The Problem
 
+Public blockchains expose every payment.
+
+Even if a wallet address is pseudonymous, anyone can see:
+
+- who paid whom
+- how much was paid
+- when it happened
+- every future transaction
+
+This makes confidential activities like payroll, freelance work, donations, treasury operations and supplier payments impossible without sacrificing privacy.
+
+---
+
+## Our Solution
+
+GhostPay enables **confidential payments on public infrastructure**.
+
+Instead of hiding the transaction itself, GhostPay keeps the transaction public while encrypting the sensitive information.
+
+The recipient remains visible.
+
+The payment amount remains confidential.
+
+Only authorized wallets can decrypt payment details.
+
+Everything is powered by **iExec Nox confidential smart contracts**.
+
+---
+
+## Features
+
+- 🔒 Confidential payment amounts
+- 🏷️ Encrypted payment categories
+- 👛 Works with existing wallets (MetaMask, Rabby)
+- 📄 Selective receipt sharing
+- 🔑 Fine-grained decryption permissions
+- ⚡ Built on Ethereum Sepolia + Nox
+
+---
+
+## Architecture
+
+```text
+Sender
+   │
+Encrypt amount & category
+   │
+   ▼
+GhostPay Router
+   │
+   ▼
+GhostVault (ERC7984 Wrapper)
+   │
+   ▼
+Wrapped ERC20
+
+           │
+
+Recipient decrypts
+           │
+
+Authorized third-party
+(Accountant/Auditor)
+can decrypt only
+shared receipts
 ```
-contracts/     Hardhat project — GhostVault, GhostPayRouter, MockUSD, deploy script, tests
-frontend/      Vite + React + Tailwind dApp — Send / Activity / Receipts
-docs/          Architecture notes
-feedback.md    Feedback on the Nox tooling, as required by the deliverables
+
+---
+
+## 🔐 Privacy Model
+
+GhostPay does **not** modify ERC20 tokens.
+
+Instead:
+
+- ERC20 tokens are wrapped with Nox
+- confidential values are stored as encrypted handles
+- access is managed through Nox ACL permissions
+
+Only wallets explicitly granted permission can decrypt.
+
+---
+
+## Screenshots
+
+### Landing Page
+
+![Landing Page](docs/screenshots/landing-page.png)
+
+### Send Payment
+
+![Send Payment](docs/screenshots/send-payment.png)
+
+### Shared Receipts
+
+![Shared Receipts](docs/screenshots/shared-receipts.png)
+
+---
+
+## Tech Stack
+
+- Solidity
+- Hardhat
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Wagmi
+- Viem
+- iExec Nox SDK
+- Ethereum Sepolia
+
+---
+
+## Repository Structure
+
+```text
+contracts/
+frontend/
+docs/
+feedback.md
 ```
 
-## Running it
+---
+
+## Running Locally
 
 ### Contracts
 
 ```bash
 cd contracts
 npm install
-cp .env.example .env   # fill in SEPOLIA_RPC_URL and DEPLOYER_PRIVATE_KEY
+cp .env.example .env
 npm run compile
 npm run deploy:sepolia
 ```
 
-Copy the three printed addresses into `frontend/src/lib/addresses.ts`.
+Update
+
+```text
+frontend/src/lib/addresses.ts
+```
+
+with the deployed addresses.
 
 ### Frontend
 
@@ -46,12 +173,39 @@ npm install
 npm run dev
 ```
 
-## Status / what's left before submission
+---
 
-This scaffold includes real contract logic and a real UI, but two things need to be confirmed/finished before this is submission-ready — see the TODO comments in `GhostPayRouter.sol` and `SendTab.tsx`/`ActivityTab.tsx`:
+## Demo
 
-- [ ] Confirm the exact ERC-7984 confidential transfer entrypoint name against the installed `@iexec-nox/nox-confidential-contracts` version
-- [ ] Wire the frontend's `encryptAmount`/`decryptHandle` calls to the deployed contract addresses via wagmi
-- [ ] Confirm ETH Sepolia (not just Arbitrum Sepolia) is fully supported by the Nox KMS/gateway for this hackathon
-- [ ] Record the 4-minute demo video using the built-in Etherscan comparison panel
-- [ ] Fill in `feedback.md`
+The demo showcases:
+
+- Wallet connection
+- Sending confidential payments
+- Encrypted categories
+- Receipt sharing
+- Third-party receipt verification
+- Public vs confidential comparison
+
+---
+
+## Future Work
+
+- Multi-recipient payments
+- Time-limited receipt permissions
+- Revocable receipt access
+- DAO treasury support
+- Payroll automation
+- Batch confidential transfers
+
+---
+
+## It's Built For
+
+**iExec WTF Hackathon (Summer Edition)**
+
+Powered by:
+
+- iExec Nox
+- Ethereum
+- React
+- Hardhat

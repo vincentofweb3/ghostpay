@@ -8,6 +8,7 @@ import { ActivityTab } from "../components/ActivityTab";
 import { ReceiptsTab } from "../components/ReceiptsTab";
 import { SplitScreenDemo } from "../components/SplitScreenDemo";
 import { Footer } from "../components/Footer";
+import { ReceiptVerificationTab } from "../components/ReceiptVerificationTab";
 
 export function Dashboard({ onBackToHome, onDocs }: { onBackToHome: () => void; onDocs: () => void }) {
   const [tab, setTab] = useState<Tab>("send");
@@ -39,6 +40,7 @@ export function Dashboard({ onBackToHome, onDocs }: { onBackToHome: () => void; 
           {tab === "send" && <SendTab />}
           {tab === "activity" && <ActivityTab />}
           {tab === "receipts" && <ReceiptsTab />}
+          {tab === "verification" && <ReceiptVerificationTab />}
         </div>
       </main>
 

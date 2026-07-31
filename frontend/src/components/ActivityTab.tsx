@@ -8,7 +8,7 @@ export function ActivityTab() {
 
   const [payments, setPayments] = useState<any[]>([]);
 
-  async function loadPayments() {
+  const loadPayments = async () => {
     const data = await getAllPayments();
 
     if (!address) {
@@ -23,20 +23,19 @@ export function ActivityTab() {
     );
 
     setPayments(myPayments);
-  }
+  };
 
   useEffect(() => {
+    if (!address) {
+      setPayments([]);
+      return;
+    }
+
     loadPayments();
 
-    const refresh = () => {
-      loadPayments();
-    };
+    window.addEventListener("paymentSent", loadPayments);
 
-    window.addEventListener("paymentSent", refresh);
-
-    return () => {
-      window.removeEventListener("paymentSent", refresh);
-    };
+    return () => window.removeEventListener("paymentSent", loadPayments);
   }, [address]);
 
   return (

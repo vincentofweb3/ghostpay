@@ -1,12 +1,19 @@
-export type Tab = "send" | "activity" | "receipts";
+export type Tab = "send" | "activity" | "receipts" | "verification";
 
 const TABS: { id: Tab; label: string; hint: string }[] = [
   { id: "send", label: "Send", hint: "01" },
   { id: "activity", label: "Activity", hint: "02" },
   { id: "receipts", label: "Receipts", hint: "03" },
+  { id: "verification", label: "Shared With Me", hint: "04" },
 ];
 
-export function Nav({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+export function Nav({
+  active,
+  onChange,
+}: {
+  active: Tab;
+  onChange: (t: Tab) => void;
+}) {
   return (
     <nav className="flex md:flex-col gap-1 md:w-44 shrink-0">
       {TABS.map((tab) => {

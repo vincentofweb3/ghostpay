@@ -6,25 +6,57 @@ import GhostPayRouter from "../abis/GhostPayRouter.json";
 import GhostVault from "../abis/GhostVault.json";
 import MockUSD from "../abis/MockUSD.json";
 
-async function getSigner() {
+let router: Contract | null = null;
+let vault: Contract | null = null;
+let mockUSD: Contract | null = null;
+
+let provider: BrowserProvider | null = null;
+
+function getProvider() {
   if (!window.ethereum) {
     throw new Error("No wallet found");
   }
 
-  const provider = new BrowserProvider(window.ethereum);
+  if (!provider) {
+    provider = new BrowserProvider(window.ethereum);
+  }
 
-  await provider.send("eth_requestAccounts", []);
+  return provider;
+}
+
+async function getSigner() {
+  const provider = getProvider();
+
+  const accounts = await provider.listAccounts();
+
+  if (accounts.length === 0) {
+    throw new Error("Wallet not connected");
+  }
 
   return provider.getSigner();
 }
 
 export async function getRouterContract() {
-  const signer = await getSigner();
+    if (router) return router;
+
+    const signer = await getSigner();
+
+    router = new Contract(
+        ADDRESSES.ghostPayRouter,
+        GhostPayRouter.abi,
+        signer
+    );
+
+    return router;
+}
+
+export function getReadOnlyRouterContract() {
+  const provider = getProvider();
 
   return new Contract(
     ADDRESSES.ghostPayRouter,
     GhostPayRouter.abi,
-    signer
+    provider
   );
 }
 
@@ -39,29 +71,20 @@ export async function issueReceipt(
     viewer
   );
 
-  console.log("Receipt tx:", tx.hash);
-
   await tx.wait();
-
-  console.log("Receipt confirmed");
 
   return tx.hash;
 }
 
 export async function getAllPayments() {
-  const router = await getRouterContract();
+  const router = getReadOnlyRouterContract();
 
   const nextPaymentId = Number(await router.nextPaymentId());
-
-  console.log("nextPaymentId =", nextPaymentId);
 
   const payments = [];
 
   for (let i = 0; i < nextPaymentId; i++) {
     const payment = await router.getPayment(i);
-
-    console.log("RAW PAYMENT");
-    console.dir(payment);
 
     payments.push({
       id: i,
@@ -83,40 +106,55 @@ export async function getAllPayments() {
     });
   }
 
-  console.log("Final payments:", payments);
-
   return payments;
 }
 
 export async function getVaultContract() {
+  if (vault) return vault;
+
   const signer = await getSigner();
 
-  return new Contract(
+  vault = new Contract(
     ADDRESSES.ghostVault,
     GhostVault.abi,
     signer
   );
+
+  return vault;
 }
 
 export async function getMockUSDContract() {
+  if (mockUSD) return mockUSD;
+
   const signer = await getSigner();
 
-  return new Contract(
+  mockUSD = new Contract(
     ADDRESSES.mockUSD,
     MockUSD.abi,
     signer
   );
+
+  return mockUSD;
 }
 
 export async function getViewerReceipts(address: string) {
   const router = await getRouterContract();
 
+  console.log("=================================");
+  console.log("Viewer:", address);
+
   const ids = await router.getViewerReceipts(address);
+
+  console.log("Receipt IDs:", ids);
 
   const payments = [];
 
   for (const id of ids) {
+    console.log("Loading payment:", Number(id));
+
     const payment = await router.getPayment(Number(id));
+
+    console.log("Payment:", payment);
 
     payments.push({
       id: Number(id),
@@ -127,6 +165,9 @@ export async function getViewerReceipts(address: string) {
       timestamp: Number(payment[4]),
     });
   }
+
+  console.log("Viewer payments:", payments);
+  console.log("=================================");
 
   return payments;
 }
