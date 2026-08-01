@@ -1,19 +1,27 @@
 import { useState } from "react";
 
-interface RedactedAmountProps {
-  /** Called to decrypt the confidential amount */
+interface RedactedFieldProps {
+  /** Called to decrypt any confidential field */
   onDecrypt: () => Promise<string>;
   label?: string;
 }
 
 /**
- * Specialized component for confidential payment amounts.
- * Used anywhere GhostPay reveals encrypted monetary values.
+ * Generic confidential field revealer.
+ *
+ * Unlike RedactedAmount, this component can be reused for
+ * Category
+ * Receipt ID
+ * Invoice Number
+ * Payroll Type
+ * Treasury
+ * Donation
+ * or any future confidential metadata.
  */
-export function RedactedAmount({
+export function RedactedField({
   onDecrypt,
-  label = "amount",
-}: RedactedAmountProps) {
+  label = "field",
+}: RedactedFieldProps) {
   const [state, setState] = useState<
     "locked" | "loading" | "revealed"
   >("locked");
@@ -38,7 +46,7 @@ export function RedactedAmount({
 
   if (state === "revealed" && value) {
     return (
-      <span className="stamp-reveal font-mono font-semibold text-green-500">
+      <span className="stamp-reveal font-mono font-semibold text-amber-500">
         {value}
       </span>
     );

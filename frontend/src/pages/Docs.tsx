@@ -47,7 +47,7 @@ export function Docs({ onBackToHome, onLaunch }: { onBackToHome: () => void; onL
               GhostPay lets anyone send a payment from their existing wallet where the recipient is
               public but the amount is not. It wraps an ordinary ERC-20 into a confidential ERC-7984
               token via iExec Nox, and adds encrypted category tags plus selective-disclosure receipts
-              on top — without modifying the token it wraps.
+              on top - without modifying the token it wraps.
             </p>
           </section>
 

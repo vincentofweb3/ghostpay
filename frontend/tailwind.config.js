@@ -6,7 +6,12 @@ export default {
     extend: {
       fontFamily: {
         display: ["Fraunces", "ui-serif", "Georgia", "serif"],
-        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+        mono: [
+          "'IBM Plex Mono'",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
@@ -22,9 +27,14 @@ export default {
           200: "#D8D2C4",
         },
         brass: {
+          100: "#F8E7C3",
+          200: "#EFCF93",
+          300: "#E0B867",
           400: "#D9A441",
           500: "#C4903A",
           600: "#A8752B",
+          700: "#855A1F",
+          800: "#654114",
         },
       },
     },

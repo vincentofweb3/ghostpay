@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PAYMENT_TAGS, encryptAmount } from "../lib/nox";
 import { getRouterContract } from "../lib/contracts";
+import { Loader2 } from "lucide-react";
 
 const TAG_OPTIONS = Object.keys(PAYMENT_TAGS) as (keyof typeof PAYMENT_TAGS)[];
 const SEND_STAGES = [
@@ -64,6 +65,16 @@ export function SendTab() {
 
       setStageIndex(null);
     }
+
+    if (!recipient.startsWith("0x") || recipient.length !== 42) {
+      alert("Enter a valid wallet address.");
+      return;
+    }
+
+    if (Number(amount) <= 0) {
+      alert("Amount must be greater than zero.");
+      return;
+    }
   }
 
   const sending = stageIndex !== null && stageIndex < SEND_STAGES.length - 1;
@@ -91,7 +102,12 @@ export function SendTab() {
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="0x…"
             className="mt-1 w-full rounded border border-ink-700/20 dark:border-paper-200/20 bg-transparent px-3 py-2 font-mono text-sm text-ink-950 dark:text-paper-50 focus:outline-none focus:ring-2 focus:ring-brass-500"
+            disabled={sending}
           />
+          <p className="mt-1 text-xs text-ink-700/60 dark:text-paper-200/50">
+            The wallet address is public. Only the payment details remain
+            confidential.
+          </p>
         </label>
 
         <label className="block">
@@ -104,7 +120,11 @@ export function SendTab() {
             placeholder="0.00"
             inputMode="decimal"
             className="mt-1 w-full rounded border border-ink-700/20 dark:border-paper-200/20 bg-transparent px-3 py-2 font-mono text-sm text-ink-950 dark:text-paper-50 focus:outline-none focus:ring-2 focus:ring-brass-500"
+            disabled={sending}
           />
+          <p className="mt-1 text-xs text-ink-700/60 dark:text-paper-200/50">
+            Amount is encrypted before being sent on-chain.
+          </p>
         </label>
 
         <div>
@@ -115,8 +135,9 @@ export function SendTab() {
             {TAG_OPTIONS.map((t) => (
               <button
                 key={t}
+                disabled={sending}
                 onClick={() => setTag(t)}
-                className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                className={`rounded-full border px-3 py-1 text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   tag === t
                     ? "border-brass-500 bg-brass-500/10 text-brass-600 dark:text-brass-400"
                     : "border-ink-700/20 dark:border-paper-200/20 text-ink-700 dark:text-paper-200/70"
@@ -141,19 +162,41 @@ export function SendTab() {
         </div>
       </div>
 
+      {sending && (
+        <div className="rounded border border-brass-500/20 bg-brass-500/5 p-3">
+          <div className="flex items-center gap-2">
+            <span className="animate-spin">⟳</span>
+            <div>
+              <p className="text-sm font-medium">{SEND_STAGES[stageIndex!]}</p>
+              <p className="text-xs text-ink-700/60">
+                Your payment is being encrypted and processed by Nox.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={handleSend}
         disabled={!recipient || !amount || sending}
-        className="w-full rounded bg-ink-950 dark:bg-paper-50 px-4 py-2.5 text-sm font-medium text-paper-50 dark:text-ink-950 disabled:opacity-40 hover:opacity-90 transition-opacity"
+        className="w-full rounded bg-ink-950 dark:bg-paper-50 px-4 py-2.5 text-sm font-medium text-paper-50 dark:text-ink-950 disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
       >
+        {sending && <Loader2 className="h-4 w-4 animate-spin" />}
+
         {stageIndex !== null ? SEND_STAGES[stageIndex] : "Send privately"}
       </button>
 
       {done && (
-        <p className="text-xs font-mono text-ink-700/70 dark:text-paper-200/60">
-          Sent. Only you and the recipient can decrypt this amount - check the
-          Activity tab.
-        </p>
+        <div className="rounded border border-green-500/30 bg-green-500/5 p-3 text-sm">
+          <p className="font-medium text-green-600">
+            Private payment sent successfully.
+          </p>
+
+          <p className="mt-1 text-xs text-ink-700/70 dark:text-paper-200/60">
+            The amount and payment category are encrypted with Nox. Only you and
+            the recipient can decrypt this payment. View it in the Activity tab.
+          </p>
+        </div>
       )}
     </div>
   );

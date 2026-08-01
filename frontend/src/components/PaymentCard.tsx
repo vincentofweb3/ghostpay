@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { RedactedAmount } from "./RedactedAmount";
+import { RedactedField } from "./RedactedField";
 import { decryptHandle } from "../lib/nox";
 import { downloadReceipt } from "../lib/pdf";
+import { CheckCircle, Download } from "lucide-react";
 
 type Props = {
   payment: any;
@@ -100,7 +102,7 @@ export function PaymentCard({
           {category ? (
             <p className="font-semibold text-amber-500">{category}</p>
           ) : (
-            <RedactedAmount
+            <RedactedField
               label="category"
               onDecrypt={async () => {
                 try {
@@ -130,9 +132,20 @@ export function PaymentCard({
         {!isSent &&
           onGrantReceipt &&
           (receiptGranted ? (
-            <div className="flex flex-col gap-2">
-              <div className="rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white text-center">
-                ✓ Receipt Granted
+            <div className="w-full max-w-xs space-y-3">
+              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={18} className="text-green-500" />
+
+                  <span className="font-semibold text-green-500">
+                    Receipt Access Granted
+                  </span>
+                </div>
+
+                <p className="mt-2 text-sm text-gray-500 dark:text-paper-200/70">
+                  Recipient can now generate a verified confidential payment
+                  receipt.
+                </p>
               </div>
 
               <button
@@ -146,15 +159,16 @@ export function PaymentCard({
                     timestamp: payment.timestamp,
                   })
                 }
-                className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brass-500 px-4 py-3 text-sm font-semibold text-black transition hover:bg-brass-400"
               >
-                Download Receipt
+                <Download size={16} />
+                Download Verified Receipt
               </button>
             </div>
           ) : (
             <button
               onClick={() => onGrantReceipt?.()}
-              className="rounded-md bg-amber-500 px-3 py-2 text-sm font-medium text-black hover:bg-amber-400 transition"
+              className="rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-black transition hover:bg-amber-400"
             >
               Grant Receipt
             </button>
@@ -162,9 +176,27 @@ export function PaymentCard({
 
         {amount && category && (
           <button
-            onClick={() => downloadReceipt(payment, amount, category)}
-            className="rounded-md bg-black px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 transition"
+            onClick={() => {
+              console.log("Download clicked");
+
+              try {
+                downloadReceipt({
+                  paymentId: payment.id,
+                  from: payment.from,
+                  to: payment.to,
+                  amount,
+                  category,
+                  timestamp: payment.timestamp,
+                });
+
+                console.log("downloadReceipt finished");
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            className="flex items-center justify-center gap-2 rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
           >
+            <Download size={16} />
             Download Receipt
           </button>
         )}

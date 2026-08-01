@@ -6,11 +6,11 @@
         │  wraps                     sends encrypted amount + tag
         ▼                                   ▼
  ┌─────────────┐   wrap()/unwrap()   ┌──────────────────┐
- │  MockUSD    │ ──────────────────▶ │   GhostVault      │
- │ (plain      │                     │ (ERC20ToERC7984   │
- │  ERC-20,    │ ◀────────────────── │  Wrapper — Nox)   │
+ │  MockUSD    │ ──────────────────▶ │   GhostVault     │
+ │ (plain      │                     │ (ERC20ToERC7984  │
+ │  ERC-20,    │ ◀────────────────── │  Wrapper — Nox)  │
  │  untouched) │   finalizeUnwrap()  └──────────────────┘
- └─────────────┘                              │
+ └─────────────┘                               │
                                                │ confidential transfer
                                                ▼
                                      ┌──────────────────┐
@@ -24,7 +24,7 @@
                               only sender/recipient/
                               granted viewer can decrypt
                                                ▼
-                                     Frontend (Send / Activity / Receipts)
+                            Frontend (Send / Activity / Receipts)
 ```
 
 ## Design decisions

@@ -7,6 +7,7 @@ import { Comparison } from "../components/landing/Comparison";
 import { TechStack } from "../components/landing/TechStack";
 import { CTA } from "../components/landing/CTA";
 import { Footer } from "../components/Footer";
+import { BuiltWith } from "../components/landing/BuiltWith";
 
 export function Landing({ onLaunch, onDocs }: { onLaunch: () => void; onDocs: () => void }) {
   return (
@@ -19,6 +20,7 @@ export function Landing({ onLaunch, onDocs }: { onLaunch: () => void; onDocs: ()
       <Comparison />
       <TechStack />
       <CTA onLaunch={onLaunch} />
+      <BuiltWith />
       <Footer onLaunch={onLaunch} onDocs={onDocs} />
     </div>
   );
