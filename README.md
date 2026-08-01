@@ -100,13 +100,17 @@ Instead of modifying ERC-20 tokens, GhostPay wraps an existing token through the
 
 ---
 
-# Architecture
+## Architecture
 
-<p align="center">
-<img src="docs/architecture.png" width="95%">
-</p>
+GhostPay consists of three main smart contracts:
 
-GhostPay consists of two primary smart contracts.
+- GhostVault
+- GhostPayRouter
+- MockUSD
+
+The complete architecture, design decisions and contract interactions are documented below.
+
+➡️ **[Full Architecture Documentation](docs/architecture.md)**
 
 ### GhostVault
 
@@ -126,10 +130,6 @@ Coordinates confidential payments by:
 
 # Payment Flow
 
-<p align="center">
-<img src="docs/payment-flow.png" width="95%">
-</p>
-
 A confidential payment follows five simple steps.
 
 1. User connects an existing wallet.
@@ -145,7 +145,9 @@ Only wallets explicitly granted permission can decrypt shared receipt informatio
 # Landing Page
 
 <p align="center">
-<img src="docs/screenshots/landing-page2.png">
+<img src="docs/screenshots/landing-page01.png">
+<br/>
+<img src="docs/screenshots/landing-page02.png">
 </p>
 
 GhostPay introduces users to confidential payments while maintaining the familiar Web3 wallet experience.
