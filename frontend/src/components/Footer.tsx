@@ -3,7 +3,7 @@ import { ADDRESSES } from "../lib/addresses";
 
 const IEXEC_URL = "https://www.iex.ec/";
 const SEPOLIA_URL = "https://sepolia.etherscan.io/";
-const GITHUB_URL = "https://github.com/YOUR-USERNAME/ghostpay";
+const GITHUB_URL = "https://github.com/vincentofweb3/ghostpay";
 
 function truncateAddr(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
